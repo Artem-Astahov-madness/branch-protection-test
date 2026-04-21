@@ -1,0 +1,64 @@
+name: 'Protect release branches'
+description: 'Configure branch protection of release branches'
+inputs:
+  organizationName:
+    description: 'Organization name'
+    required: true
+    default: 'Artem-Astahov-madness'
+  repositoryName:
+    description: 'Repository name'
+    required: true
+  gitPat:
+    description: 'Git Personal Access Token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check token length
+      shell: bash
+      run: |
+        TOKEN="${{ inputs.gitPat }}"
+        echo "Token length: ${#TOKEN}"
+
+    - name: Check token validity
+      shell: bash
+      run: |
+        curl -H "Authorization: Bearer ${{ inputs.gitPat }}" https://api.github.com/user
+
+    - name: Update branch protection
+      shell: bash
+      run: |
+        curl -X POST https://api.github.com/repos/${{ inputs.organizationName }}/${{ inputs.repositoryName }}/rulesets \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ inputs.gitPat }}" \
+          -d '{
+          "name": "Release branches protection",
+          "target": "branch",
+          "enforcement": "evaluate",
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/release/*"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "required_approving_review_count": 2
+              }
+            },
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "required_status_checks": [
+                  { "context": "Java CI" },
+                  { "context": "Build and Publish" },
+                  { "context": "OpenAPI Specs Validation" }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            }
+          ]
+        }'
