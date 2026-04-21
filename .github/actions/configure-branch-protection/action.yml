@@ -39,7 +39,8 @@ runs:
           "enforcement": "evaluate",
           "conditions": {
             "ref_name": {
-              "include": ["refs/heads/release/*"]
+              "include": ["refs/heads/release/*"],
+              "exclude": []
             }
           },
           "rules": [
