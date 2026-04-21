@@ -31,6 +31,7 @@ runs:
       run: |
         curl -X POST https://api.github.com/repos/${{ inputs.organizationName }}/${{ inputs.repositoryName }}/rulesets \
           -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2026-03-10" \
           -H "Authorization: Bearer ${{ inputs.gitPat }}" \
           -d '{
           "name": "Release branches protection",
