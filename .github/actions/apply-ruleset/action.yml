@@ -36,9 +36,8 @@ runs:
         
         echo "GITHUB_URL=https://api.github.com/repos/$ORG_NAME/$REPO_NAME/rulesets" >> $GITHUB_ENV
         
-        echo "AUTH_HEADER=Authorization: Bearer $PAT_TOKEN" >> $GITHUB_ENV
-        echo "ACCEPT_HEADER=Accept: application/vnd.github+json" >> $GITHUB_ENV
-        echo "API_VERSION=X-GitHub-Api-Version: 2026-03-10" >> $GITHUB_ENV
+        echo "ACCEPT_HEADER=application/vnd.github+json" >> $GITHUB_ENV
+        echo "API_VERSION=2026-03-10" >> $GITHUB_ENV
         
         echo "RULESET_FILE=.github/rulesets/$RULESET_NAME.json" >> $GITHUB_ENV
 
@@ -55,10 +54,10 @@ runs:
       shell: bash
       run: |
         echo "Checking if ruleset with name [$RULESET_NAME] already exists"
-        RESPONSE=$(curl -s $GITHUB_URL \
-          -H "$ACCEPT_HEADER" \
-          -H "$API_VERSION" \
-          -H "$AUTH_HEADER")
+        RESPONSE=$(curl -s "$GITHUB_URL" \
+          -H "Accept: $ACCEPT_HEADER" \
+          -H "X-GitHub-Api-Version: $API_VERSION" \
+          -H "Authorization: Bearer $PAT_TOKEN")
         
         RULESET_ID=$(echo "$RESPONSE" | jq -r ".[] | select(.name == \"$RULESET_NAME\") | .id")
         
@@ -77,9 +76,9 @@ runs:
       run: |
         echo "Creating ruleset with name [$RULESET_NAME]"
         curl -X POST -s $GITHUB_URL \
-          -H "$ACCEPT_HEADER" \
-          -H "$API_VERSION" \
-          -H "$AUTH_HEADER" \
+          -H "Accept: $ACCEPT_HEADER" \
+          -H "X-GitHub-Api-Version: $API_VERSION" \
+          -H "Authorization: Bearer $PAT_TOKEN" \
           -d $RULESET_FILE
 
     - name: Update ruleset
@@ -88,7 +87,7 @@ runs:
       run: |
         echo "Updating ruleset with name [$RULESET_NAME]"
         curl -X PUT -s $GITHUB_URL/${{ steps.ruleset-exists.outputs.rulesetId }} \
-          -H "$ACCEPT_HEADER" \
-          -H "$API_VERSION" \
-          -H "$AUTH_HEADER" \
+          -H "Accept: $ACCEPT_HEADER" \
+          -H "X-GitHub-Api-Version: $API_VERSION" \
+          -H "Authorization: Bearer $PAT_TOKEN" \
           -d $RULESET_FILE
