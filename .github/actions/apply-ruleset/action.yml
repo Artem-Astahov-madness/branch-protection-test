@@ -80,7 +80,7 @@ runs:
           -H "$ACCEPT_HEADER" \
           -H "$API_VERSION" \
           -H "$AUTH_HEADER" \
-          -d $RULESET_FILE
+          -d @"$RULESET_FILE"
 
     - name: Update ruleset
       if: steps.ruleset-exists.outputs.rulesetId != ''
@@ -91,4 +91,4 @@ runs:
           -H "$ACCEPT_HEADER" \
           -H "$API_VERSION" \
           -H "$AUTH_HEADER" \
-          -d $RULESET_FILE
+          -d @"$RULESET_FILE"
