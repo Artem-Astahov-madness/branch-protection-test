@@ -15,21 +15,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Check token length
-      shell: bash
-      run: |
-        TOKEN="${{ inputs.gitPat }}"
-        echo "Token length: ${#TOKEN}"
-
-    - name: Check token validity
-      shell: bash
-      run: |
-        curl -H "Authorization: Bearer ${{ inputs.gitPat }}" https://api.github.com/user
+#    - name: Delete existing ruleset
+#      shell: bash
+#      run: |
+#        curl -X POST https://api.github.com/repos/${{ inputs.organizationName }}/${{ inputs.repositoryName }}/rulesets \
+#          -H "Accept: application/vnd.github+json" \
+#          -H "X-GitHub-Api-Version: 2026-03-10" \
+#          -H "Authorization: Bearer ${{ inputs.gitPat }}"
 
     - name: Update branch protection
       shell: bash
       run: |
-        curl -X POST https://api.github.com/repos/${{ inputs.organizationName }}/${{ inputs.repositoryName }}/rulesets \
+        curl -X PUT https://api.github.com/repos/${{ inputs.organizationName }}/${{ inputs.repositoryName }}/rulesets \
           -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2026-03-10" \
           -H "Authorization: Bearer ${{ inputs.gitPat }}" \
