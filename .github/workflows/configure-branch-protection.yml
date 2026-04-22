@@ -1,15 +1,14 @@
-name: Configure Branch Protection Test
+name: Configure Branch Protection
 on:
   workflow_dispatch:
     inputs:
-      organizationName:
-        description: 'Organization name'
-        required: true
-        default: 'Artem-Astahov-madness'
       repositoryName:
         description: 'Repository Name'
         required: true
         default: 'branch-protection-test'
+      rulesetName:
+        description: 'Ruleset Name'
+        required: true
 
 jobs:
   Configure-Branch-Protection:
@@ -17,8 +16,8 @@ jobs:
     steps:
       - name: Checkout project sources
         uses: actions/checkout@v5
-      - uses: ./.github/actions/configure-branch-protection
+      - uses: ./.github/actions/apply-ruleset
         with:
-          organizationName: ${{ github.event.inputs.organizationName }}
+          rulesetName: ${{ github.event.inputs.rulesetName }}
           repositoryName: ${{ github.event.inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}
