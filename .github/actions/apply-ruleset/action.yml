@@ -22,6 +22,8 @@ runs:
     - name: Prepare environmental variables
       shell: bash
       run: |
+        echo "Preparing environmental variables"
+        
         set -euo pipefail
         
         ORG_NAME="${{ inputs.organizationName }}"

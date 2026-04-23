@@ -9,6 +9,7 @@ on:
       rulesetName:
         description: 'Ruleset Name'
         required: true
+        default: ruleset1
 
 jobs:
   Configure-Branch-Protection:

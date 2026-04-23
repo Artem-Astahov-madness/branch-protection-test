@@ -1,0 +1,38 @@
+{
+  "name": "release-branch-ruleset",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": [
+        "refs/heads/release/*"
+      ],
+      "exclude": [
+
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "pull_request",
+      "parameters": {
+        "dismiss_stale_reviews_on_push": false,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_approving_review_count": 3,
+        "required_review_thread_resolution": false
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "required_status_checks": [
+          { "context": "Java CI" },
+          { "context": "Build and Publish" },
+          { "context": "OpenAPI Specs Validation" }
+        ],
+        "strict_required_status_checks_policy": true
+      }
+    }
+  ]
+}
