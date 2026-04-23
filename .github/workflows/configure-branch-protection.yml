@@ -7,15 +7,15 @@ on:
         required: true
         default: 'branch-protection-test'
       enable-master-protection:
-        description: 'Should the master branch protection be applied'
+        description: 'Apply master branch protection'
         type: boolean
         required: true
-        default: false
+        default: true
       enable-release-protection:
-        description: 'Should the release branch protection be applied'
+        description: 'Apply release branch protection'
         type: boolean
         required: true
-        default: false
+        default: true
 
 jobs:
   Configure-Branch-Protection:
