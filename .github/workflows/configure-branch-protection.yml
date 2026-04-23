@@ -12,7 +12,7 @@ on:
         required: true
         default: false
       enable-release-protection:
-        description: 'Should the master branch protection be applied'
+        description: 'Should the release branch protection be applied'
         type: boolean
         required: true
         default: false
@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Apply master branch ruleset
-        if: enable-master-protection
+        if: ${{ github.event.inputs.enable-master-protection }}
         uses: ./.github/actions/apply-ruleset
         with:
           rulesetName: master-branch-ruleset
@@ -34,7 +34,7 @@ jobs:
           gitPat: ${{ secrets.git_pat }}
 
       - name: Apply master branch ruleset
-        if: enable-release-protection
+        if: ${{ github.event.inputs.enable-release-protection }}
         uses: ./.github/actions/apply-ruleset
         with:
           rulesetName: release-branch-ruleset
