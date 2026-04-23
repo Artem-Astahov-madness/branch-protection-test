@@ -4,8 +4,7 @@
   "enforcement": "active",
   "conditions": {
     "ref_name": {
-      "include": ["refs/heads/release/*"],
-      "exclude": []
+      "include": ["refs/heads/release/*"]
     }
   },
   "rules": [
