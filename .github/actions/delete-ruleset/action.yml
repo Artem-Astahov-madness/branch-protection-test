@@ -1,0 +1,74 @@
+name: 'Delete ruleset'
+description: 'Deletes given ruleset from the given repository'
+inputs:
+  organizationName:
+    description: 'Organization name'
+    required: true
+    default: 'Artem-Astahov-madness'
+  repositoryName:
+    description: 'Repository name'
+    required: true
+  gitPat:
+    description: 'Git Personal Access Token'
+    required: true
+  rulesetName:
+    description: 'Ruleset Name'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+
+    - name: Prepare environmental variables
+      shell: bash
+      run: |
+        echo "Preparing environmental variables"
+        
+        set -euo pipefail
+        
+        ORG_NAME="${{ inputs.organizationName }}"
+        REPO_NAME="${{ inputs.repositoryName }}"
+        RULESET_NAME="${{ inputs.rulesetName }}"
+        PAT_TOKEN="${{ inputs.gitPat }}"
+        
+        echo "ORG_NAME=$ORG_NAME" >> $GITHUB_ENV
+        echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+        echo "RULESET_NAME=$RULESET_NAME" >> $GITHUB_ENV
+        echo "PAT_TOKEN=$PAT_TOKEN" >> $GITHUB_ENV
+        
+        echo "GITHUB_URL=https://api.github.com/repos/$ORG_NAME/$REPO_NAME/rulesets" >> $GITHUB_ENV
+        
+        echo "AUTH_HEADER=Authorization: Bearer $PAT_TOKEN" >> $GITHUB_ENV
+        echo "ACCEPT_HEADER=Accept: application/vnd.github+json" >> $GITHUB_ENV
+        echo "API_VERSION=X-GitHub-Api-Version: 2026-03-10" >> $GITHUB_ENV
+
+    - name: Check if ruleset exists
+      id: ruleset-exists
+      shell: bash
+      run: |
+        echo "Checking if ruleset with name [$RULESET_NAME] already exists"
+        RESPONSE=$(curl -s $GITHUB_URL \
+          -H "$ACCEPT_HEADER" \
+          -H "$API_VERSION" \
+          -H "$AUTH_HEADER")
+        
+        RULESET_ID=$(echo "$RESPONSE" | jq -r ".[] | select(.name == \"$RULESET_NAME\") | .id")
+        
+        if [[ -z "$RULESET_ID" || "$RULESET_ID" == "null" ]]; then
+          RULESET_ID=""
+          echo "Ruleset with name [$RULESET_NAME] not found"
+        else
+          echo "Found ruleset with name [$RULESET_NAME] and id [$RULESET_ID]"
+        fi
+
+        echo "rulesetId=$RULESET_ID" >> "$GITHUB_OUTPUT"
+
+    - name: Delete ruleset
+      if: steps.ruleset-exists.outputs.rulesetId != ''
+      shell: bash
+      run: |
+        echo "Deleting ruleset with name [$RULESET_NAME]"
+        curl -X DELETE --fail --silent --show-error $GITHUB_URL/${{ steps.ruleset-exists.outputs.rulesetId }} \
+          -H "$ACCEPT_HEADER" \
+          -H "$API_VERSION" \
+          -H "$AUTH_HEADER"
