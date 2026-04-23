@@ -22,7 +22,7 @@ runs:
     - name: Prepare environmental variables
       shell: bash
       run: |
-        echo "Preparing environmental variables"
+        # Prepare environmental variables
         
         set -euo pipefail
         
@@ -47,16 +47,18 @@ runs:
     - name: Check if json file exists
       shell: bash
       run: |
+        # Check if json file exists
         if [[ ! -f $RULESET_FILE ]]; then
           echo "Ruleset file not found: .github/rulesets/$RULESET_NAME.json"
           exit 1
         fi
 
-    - name: Check if ruleset already created
+    - name: Check if ruleset already exists
       id: ruleset-exists
       shell: bash
       run: |
-        echo "Checking if ruleset with name [$RULESET_NAME] already exists"
+        # Check if ruleset already exists
+        
         RESPONSE=$(curl -s $GITHUB_URL \
           -H "$ACCEPT_HEADER" \
           -H "$API_VERSION" \
@@ -77,6 +79,7 @@ runs:
       if: steps.ruleset-exists.outputs.rulesetId == ''
       shell: bash
       run: |
+        # Create ruleset
         echo "Creating ruleset with name [$RULESET_NAME]"
         curl -X POST --fail --silent --show-error $GITHUB_URL \
           -H "$ACCEPT_HEADER" \
@@ -88,6 +91,7 @@ runs:
       if: steps.ruleset-exists.outputs.rulesetId != ''
       shell: bash
       run: |
+        # Update ruleset
         echo "Updating ruleset with name [$RULESET_NAME]"
         curl -X PUT --fail --silent --show-error $GITHUB_URL/${{ steps.ruleset-exists.outputs.rulesetId }} \
           -H "$ACCEPT_HEADER" \

@@ -33,7 +33,7 @@ jobs:
           repositoryName: ${{ github.event.inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}
 
-      - name: Apply master branch ruleset
+      - name: Apply release branch ruleset
         if: ${{ github.event.inputs.enable-release-protection }}
         uses: ./.github/actions/apply-ruleset
         with:
