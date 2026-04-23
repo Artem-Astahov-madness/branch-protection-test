@@ -10,12 +10,12 @@ on:
         description: 'Apply master branch protection'
         type: boolean
         required: true
-        default: true
+        default: false
       enable-release-protection:
         description: 'Apply release branch protection'
         type: boolean
         required: true
-        default: true
+        default: false
 
 jobs:
   Configure-Branch-Protection:
@@ -26,17 +26,17 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Apply master branch ruleset
-        if: ${{ github.event.inputs.enable-master-protection }}
+        if: ${{ inputs.enable-master-protection }}
         uses: ./.github/actions/apply-ruleset
         with:
           rulesetName: master-branch-ruleset
-          repositoryName: ${{ github.event.inputs.repositoryName }}
+          repositoryName: ${{ inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}
 
       - name: Apply release branch ruleset
-        if: ${{ github.event.inputs.enable-release-protection }}
+        if: ${{ inputs.enable-release-protection }}
         uses: ./.github/actions/apply-ruleset
         with:
           rulesetName: release-branch-ruleset
-          repositoryName: ${{ github.event.inputs.repositoryName }}
+          repositoryName: ${{ inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}

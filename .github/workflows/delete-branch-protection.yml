@@ -22,6 +22,6 @@ jobs:
       - name: Delete ruleset
         uses: ./.github/actions/delete-ruleset
         with:
-          rulesetName: ${{ github.event.inputs.rulesetName }}
-          repositoryName: ${{ github.event.inputs.repositoryName }}
+          rulesetName: ${{ inputs.rulesetName }}
+          repositoryName: ${{ inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}
