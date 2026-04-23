@@ -22,7 +22,7 @@ runs:
     - name: Prepare environmental variables
       shell: bash
       run: |
-        echo "Preparing environmental variables"
+        # Prepare environmental variables
         
         set -euo pipefail
         
@@ -46,7 +46,8 @@ runs:
       id: ruleset-exists
       shell: bash
       run: |
-        echo "Checking if ruleset with name [$RULESET_NAME] already exists"
+        # Check if ruleset already exists
+        
         RESPONSE=$(curl -s $GITHUB_URL \
           -H "$ACCEPT_HEADER" \
           -H "$API_VERSION" \
@@ -67,6 +68,8 @@ runs:
       if: steps.ruleset-exists.outputs.rulesetId != ''
       shell: bash
       run: |
+        # Delete ruleset
+        
         echo "Deleting ruleset with name [$RULESET_NAME]"
         curl -X DELETE --fail --silent --show-error $GITHUB_URL/${{ steps.ruleset-exists.outputs.rulesetId }} \
           -H "$ACCEPT_HEADER" \
