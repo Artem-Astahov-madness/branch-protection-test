@@ -6,10 +6,16 @@ on:
         description: 'Repository Name'
         required: true
         default: 'branch-protection-test'
-      rulesetName:
-        description: 'Ruleset Name'
+      enable-master-protection:
+        description: 'Should the master branch protection be applied'
+        type: boolean
         required: true
-        default: ruleset1
+        default: false
+      enable-release-protection:
+        description: 'Should the master branch protection be applied'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   Configure-Branch-Protection:
@@ -19,9 +25,18 @@ jobs:
       - name: Checkout project sources
         uses: actions/checkout@v5
 
-      - name: Apply ruleset
+      - name: Apply master branch ruleset
+        if: enable-master-protection
         uses: ./.github/actions/apply-ruleset
         with:
-          rulesetName: ${{ github.event.inputs.rulesetName }}
+          rulesetName: master-branch-ruleset
+          repositoryName: ${{ github.event.inputs.repositoryName }}
+          gitPat: ${{ secrets.git_pat }}
+
+      - name: Apply master branch ruleset
+        if: enable-release-protection
+        uses: ./.github/actions/apply-ruleset
+        with:
+          rulesetName: release-branch-ruleset
           repositoryName: ${{ github.event.inputs.repositoryName }}
           gitPat: ${{ secrets.git_pat }}
