@@ -1,4 +1,4 @@
-name: Configure Branch Protection
+name: Delete Branch Protection
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout project sources
         uses: actions/checkout@v5
 
-      - name: Apply ruleset
+      - name: Delete ruleset
         uses: ./.github/actions/delete-ruleset
         with:
           rulesetName: ${{ github.event.inputs.rulesetName }}
